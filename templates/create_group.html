@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Group</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h1>Create Group</h1>
+        <form method="POST" action="{{ url_for('create_group') }}">
+            {{ form.hidden_tag() }}
+            <p>
+                {{ form.group_name.label }}<br>
+                {{ form.group_name(size=32) }}
+            </p>
+            <p>
+                Enter the time period during which you want <br> 
+                your group's rendezvous to take place:
+            </p>
+            <p>
+                {{ form.start_date.label }}<br>
+                {{ form.start_date(type="date") }}
+            </p>
+            <p>
+                {{ form.end_date.label }}<br>
+                {{ form.end_date(type="date") }}
+            </p>
+            <p>
+                {{ form.submit() }}
+            </p>
+        </form>
+    </div>
+</body>
+</html>
