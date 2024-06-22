@@ -28,7 +28,7 @@
         <p>Link: {{ group.group_link}}</p>
 
         <h2>Select Availability</h2>
-        <form method="POST" action="{{ url_for('freetime') }}">
+        <form method="POST" action="{{ url_for('group_details') }}">
             {{ form.hidden_tag() }} 
             <table class="availability-table">
                 <thead>
