@@ -102,7 +102,7 @@ def create_group():
 @login_required
 def group_details(group_link): 
     group = Group.query.filter_by(group_link=group_link).first_or_404()
-
+fghj
     start_date = group.start_date.date() if isinstance(group.start_date, datetime) else group.start_date
     end_date = group.end_date.date() if isinstance(group.end_date, datetime) else group.end_date
     
