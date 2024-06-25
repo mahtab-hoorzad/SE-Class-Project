@@ -101,7 +101,7 @@ def create_group():
 @app.route('/group_details/<group_link>', methods=['GET', 'POST'])
 @login_required
 def group_details(group_link):
-    group_link = session.get('group_link')
+    user_id = session.get('_user_id')
     group = Group.query.filter_by(group_link=group_link).first_or_404()
     form = FreetimeForm()
     if request.method == 'POST' and form.validate_on_submit():
@@ -127,7 +127,7 @@ def group_details(group_link):
         dates = [(start_date + timedelta(days=i)).strftime('%Y-%m-%d') for i in range((end_date - start_date).days + 1)]
         hours = [f"{i}:00" for i in range(24)]  
 
-    return render_template('group_details.html', group=group,form=form,user_=user_id)
+    return render_template('group_details.html', group=group,form=form,user_id=user_id)
 
 # @app.route('/availability', methods=['POST'])
 # def submit_availability():
