@@ -1,6 +1,5 @@
-/* General Styles */
 body {
-    font-family: 'Comic Sans MS', cursive, sans-serif;
+    font-family: 'Open Sans', sans-serif;
     background-color: #ffebef;
     color: #333;
     margin: 0;
@@ -26,8 +25,6 @@ h1, h2 {
 
 form {
     width: 100%;
-    max-width: 400px;
-    margin: auto;
 }
 
 form p {

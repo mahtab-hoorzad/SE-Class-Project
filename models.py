@@ -49,8 +49,8 @@ class Freetime(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     group_id = db.Column(db.Integer, db.ForeignKey('group.id'), nullable=False)
     freetime_date = db.Column(db.Date, nullable=False)
-    freetime_start_time = db.Column(db.Time, nullable=False)
-    freetime_end_time = db.Column(db.Time, nullable=False)
+    freetime_start = db.Column(db.Time, nullable=False)
+    freetime_end = db.Column(db.Time, nullable=False)
 
 class FreetimeForm(FlaskForm):
     #freetime_date = db.Column(db.Date, nullable=False)

@@ -98,11 +98,17 @@ def create_group():
             flash('Form validation failed', 'danger')
     return render_template('create_group.html', form=form)
 
+
+
+# the form gets submmited but not validated
+# it just refreshes the page after submission 
+
+
 @app.route('/group_details/<group_link>', methods=['GET', 'POST'])
 @login_required
 def group_details(group_link): 
     group = Group.query.filter_by(group_link=group_link).first_or_404()
-fghj
+
     start_date = group.start_date.date() if isinstance(group.start_date, datetime) else group.start_date
     end_date = group.end_date.date() if isinstance(group.end_date, datetime) else group.end_date
     
@@ -128,7 +134,7 @@ fghj
                 end_time = start_time.time() + timedelta(hours=1)
                 print(f"1:{start_time}2:{end_date}")
                 new_availability = Freetime(user_id=user_id, freetime_date=start_time.date(),
-                                            freetime_start_time=start_time.time(), freetime_end_time=end_time.time())
+                                            freetime_start=start_time.time(), freetime_end=end_time.time())
                 db.session.add(new_availability)
             try:
                 db.session.commit()
@@ -141,17 +147,14 @@ fghj
 
     return render_template('group_details.html', group=group,form=form,user_id=user_id,dates=dates,hours=hours)
 
-# @app.route('/availability', methods=['POST'])
-# def submit_availability():
-#     data = request.json
-#     group_id = data['group_id']
-#     selected_times = data['selected_times']
-#     for time in selected_times:
-#         new_availability = Availability(group_id=group_id, day=time['day'], hour=time['hour'])
-#         db.session.add(new_availability)
-#     db.session.commit()
-#     return jsonify({"message": "Availability submitted successfully"}), 200
+@app.route('/availability', methods=['POST'])
+def availability():
+    group_id = Group.id
+    availability_date = Group.freetime_date
+    availability_time = Group.freetime_start_time
 
+    return render_template('availability.html', group_id, availability_date, availability_time)
+                           
 if __name__ == '__main__':
     # with app.app_context():
     #     db.create_all()
