@@ -34,7 +34,6 @@ def login():
         user_name = form.user_name.data
         user_email = form.user_email.data
         user_phonenumber = form.user_phonenumber.data
-        #user = None
         if user_email:
             user = User.query.filter_by(user_email=user_email).first()
         elif user_phonenumber:
@@ -80,8 +79,9 @@ def create_group():
             start_date = form.start_date.data
             end_date = form.end_date.data
             unique_id = uuid.uuid4().hex
-            base_url = request.host_url
-            group_link = f"{base_url}{unique_id}"
+            #base_url = request.host_url
+            #group_link = f"{base_url}{unique_id}"
+            group_link = unique_id
             print(f"name: {group_name}, sdate: {start_date}, edate: {end_date}, link: {group_link}")
             new_group = Group(group_name=group_name, start_date=start_date, end_date=end_date, group_link=group_link)
             db.session.add(new_group)
@@ -97,14 +97,6 @@ def create_group():
             print(form.errors)  
             flash('Form validation failed', 'danger')
     return render_template('create_group.html', form=form)
-    #return redirect(url_for('group_details', group_link=group_link))
-
-# @app.route('/group_details/<group_link>', methods=['GET'])
-# @login_required
-# def group_details(group_link):
-#     group = Group.query.filter_by(group_link=group_link).first_or_404()
-#     return redirect(url_for('freetime', group_link=group_link))
-#     #return render_template('group_details.html', group=group)
 
 @app.route('/group_details/<group_link>', methods=['GET', 'POST'])
 @login_required
