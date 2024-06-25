@@ -1,7 +1,7 @@
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import UserMixin
 from flask_wtf import FlaskForm
-from wtforms import StringField, SubmitField, DateField
+from wtforms import StringField, SubmitField, DateField, DateTimeField
 from wtforms.validators import DataRequired, Email, Length, Optional, ValidationError 
 
 db = SQLAlchemy()
@@ -44,25 +44,28 @@ class Membership(db.Model):
     #     db.UniqueConstraint('user_id', 'group_id', name='unique_membership'),
     # )
 
+class Freetime(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    group_id = db.Column(db.Integer, db.ForeignKey('group.id'), nullable=False)
+    freetime_date = db.Column(db.Date, nullable=False)
+    freetime_start_time = db.Column(db.Time, nullable=False)
+    freetime_end_time = db.Column(db.Time, nullable=False)
+
+class FreetimeForm(FlaskForm):
+    #freetime_date = db.Column(db.Date, nullable=False)
+    #freetime_start_time = db.Column(db.DateTime, nullable=False)
+    #freetime_end_time = db.Column(db.DateTime, nullable=False)
+    start_time = DateTimeField('Start Time', format='%Y-%m-%d %H:%M', validators=[DataRequired()])
+    end_time = DateTimeField('End Time', format='%Y-%m-%d %H:%M', validators=[DataRequired()])
+    submit = SubmitField('Submit')
+
 class Meetups(db.Model):
     meetup_id = db.Column(db.Integer, primary_key=True)
     group_id = db.Column(db.Integer, db.ForeignKey('group.id'), nullable=False)
     meetup_date = db.Column(db.Date, nullable=False)
     meetup_start_time = db.Column(db.Time, nullable=False)
     meetup_start_time = db.Column(db.Time, nullable=False)
-
-class Freetime(db.Model):
-    freetime_id = db.Column(db.Integer, primary_key=True)
-    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
-    # group_id = db.Column(db.Integer, db.ForeignKey('group.i'), nullable=False)
-    freetime_date = db.Column(db.Date, nullable=False)
-    freetime_start_time = db.Column(db.Time, nullable=False)
-    freetime_end_time = db.Column(db.Time, nullable=False)
-
-class FreetimeForm(FlaskForm):
-    start_time = db.Column(db.DateTime, nullable=False)
-    end_time = db.Column(db.DateTime, nullable=False)
-    submit = SubmitField('Submit')
 
 class Attendance(db.Model):
     user_id = db.Column(db.Integer, primary_key=True, nullable=False)

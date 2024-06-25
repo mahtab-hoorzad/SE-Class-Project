@@ -100,34 +100,46 @@ def create_group():
 
 @app.route('/group_details/<group_link>', methods=['GET', 'POST'])
 @login_required
-def group_details(group_link):
-    user_id = session.get('_user_id')
+def group_details(group_link): 
     group = Group.query.filter_by(group_link=group_link).first_or_404()
+
+    start_date = group.start_date.date() if isinstance(group.start_date, datetime) else group.start_date
+    end_date = group.end_date.date() if isinstance(group.end_date, datetime) else group.end_date
+    
+    dates =[]
+    current_date = start_date
+    while current_date <= end_date :
+        dates.append(current_date.strftime('%Y-%m-%d'))
+        current_date += timedelta(days=1)
+    hours = [f"{i}:00" for i in range(24)]  
+    
+    user_id = session.get('_user_id')
+    
     form = FreetimeForm()
-    if request.method == 'POST' and form.validate_on_submit():
-        user_id = current_user.user_id 
-        selected_availability = request.form.getlist('availability')
-        for item in selected_availability:
-            date, time = item.split()
-            start_time = datetime.strptime(f"{date} {time}", '%Y-%m-%d %H:%M')
-            end_time = start_time + timedelta(hours=1)
-            new_availability = Freetime(user_id=current_user.id, freetime_date=start_time.date(),
-                                        freetime_start_time=start_time.time(), freetime_end_time=end_time.time())
-            db.session.add(new_availability)
-        try:
-            db.session.commit()
-            flash('Availability Submitted Successfully!', 'success')
-            return redirect(url_for('group_details.html'))
-        except Exception as e:
-            db.session.rollback()
-            flash('Error: ' + str(e), 'danger')
+    if request.method == 'POST':
+        print("Form submitted")
+        if form.validate_on_submit():
+            print("Form validated")
+            user_id = current_user.id 
+            selected_availability = request.form.getlist('availability')
+            for item in selected_availability:
+                date, time = item.split()
+                start_time = datetime.strptime(f"{date} {time}", '%Y-%m-%d %H:%M')
+                end_time = start_time.time() + timedelta(hours=1)
+                print(f"1:{start_time}2:{end_date}")
+                new_availability = Freetime(user_id=user_id, freetime_date=start_time.date(),
+                                            freetime_start_time=start_time.time(), freetime_end_time=end_time.time())
+                db.session.add(new_availability)
+            try:
+                db.session.commit()
+                flash('Availability Submitted Successfully!', 'success')
+                return redirect(url_for('availability.html',group_id=group.id))
+            except Exception as e:
+                db.session.rollback()
+                flash('Error: ' + str(e), 'danger')
 
-        start_date = Group.start_date.date()
-        end_date = Group.end_date.date()
-        dates = [(start_date + timedelta(days=i)).strftime('%Y-%m-%d') for i in range((end_date - start_date).days + 1)]
-        hours = [f"{i}:00" for i in range(24)]  
 
-    return render_template('group_details.html', group=group,form=form,user_id=user_id)
+    return render_template('group_details.html', group=group,form=form,user_id=user_id,dates=dates,hours=hours)
 
 # @app.route('/availability', methods=['POST'])
 # def submit_availability():

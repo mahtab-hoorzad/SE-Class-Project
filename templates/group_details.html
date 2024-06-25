@@ -6,18 +6,60 @@
     <title>Group Details</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
     <style>
+        form {
+            max-width: 100%;
+            margin: 20px auto;
+        }
         .availability-table {
             width: 100%;
             border-collapse: collapse;
+            margin-bottom: 20px;
         }
         .availability-table th, .availability-table td {
             border: 1px solid #ccc;
-            padding: 8px;
+            padding: 5px;
             text-align: center;
+        }
+        .availability-table th {
+            background-color: #f4f4f4;
         }
         .selected {
             background-color: #a5d6a7; 
         }
+        input[type="checkbox"] {
+            display: none;
+        }
+        .availability-table label {
+            display: block;
+            height: 100%;
+            cursor: pointer;
+        }
+        label {
+            color: white;
+        }
+        input[type="checkbox"]:checked + label {
+            background-color: #a5d6a7;
+            color: white;
+            border-radius: 3px;
+
+        }
+        .availability-table td {
+            position: relative;
+        }
+        
+
+        /* .selected {
+            background-color: #a5d6a7; 
+        }
+        input[type="checkbox"]  {
+           display: none;
+        }
+        .availability-table input:checked ~ td {
+            background-color: #1c09ac;
+        }
+        td:has(input:checked) {
+            background-color: rgb(110, 198, 110);
+        } */
     </style>
 </head>
 <body>
@@ -25,10 +67,10 @@
         <h1>Group: {{ group.group_name }}</h1>
         <p>Start Date: {{ group.start_date }}</p>
         <p>End Date: {{ group.end_date }}</p>
-        <p>Link: {{ group.group_link}}</p>
+        <p>Link: {{ url_for('group_details', group_link=group.group_link)}}</p>
 
         <h2>Select Availability</h2>
-        <form method="POST" action="{{ url_for('group_details') }}">
+        <form method="POST" action="{{ url_for('group_details', group_link=group.group_link)  }}">
             {{ form.hidden_tag() }} 
             <table class="availability-table">
                 <thead>
@@ -46,7 +88,7 @@
                             {% for hour in hours %}
                                 <td data-date="{{ date }}" data-time="{{ hour }}">
                                     <input type="checkbox" name="availability" value="{{ date }} {{ hour }}" id="{{ date }}-{{ hour }}">
-                                    <label for="{{ date }}-{{ hour }}">{{ hour }}</label>
+                                    <label for="{{ date }}-{{ hour }}">free</label>
                                 </td>
                             {% endfor %}
                         </tr>
