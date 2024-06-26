@@ -7,25 +7,27 @@
 
 </head>
 <body>
-    <h1>Welcome to Rendez-vous!</h1>
-    <h2>Login</h2>
-    <form method="POST" action="{{ url_for('login') }}">
-        {{ form.hidden_tag() }}
-        <p>
-            {{ form.user_name.label }}<br>
-            {{ form.user_name(size=32) }}
-        </p>
-        <p>
-            {{ form.user_email.label }}<br>
-            {{ form.user_email(size=32) }}
-        </p>
-        <p>
-            {{ form.user_phonenumber.label }}<br>
-            {{ form.user_phonenumber(size=32) }}
-        </p>
-        <p>
-            {{ form.submit() }}
-        </p>
-    </form>
+    <div class="container">
+        <h1>Welcome to Rendez-vous!</h1>
+        <h2>Login</h2>
+        <form method="POST" action="{{ url_for('login') }}">
+            {{ form.hidden_tag() }}
+            <p>
+                {{ form.user_name.label }}<br>
+                {{ form.user_name(size=32) }}
+            </p>
+            <p>
+                {{ form.user_email.label }}<br>
+                {{ form.user_email(size=32) }}
+            </p>
+            <p>
+                {{ form.user_phonenumber.label }}<br>
+                {{ form.user_phonenumber(size=32) }}
+            </p>
+            <p>
+                {{ form.submit() }}
+            </p>
+        </form>
+    </div>
 </body>
 </html>
