@@ -156,6 +156,6 @@ def availability():
     return render_template('availability.html', group_id, availability_date, availability_time)
                            
 if __name__ == '__main__':
-    # with app.app_context():
-    #     db.create_all()
+    with app.app_context():
+        db.create_all()
     app.run(debug=True)
