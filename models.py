@@ -53,11 +53,7 @@ class Freetime(db.Model):
     freetime_end = db.Column(db.Time, nullable=False)
 
 class FreetimeForm(FlaskForm):
-    #freetime_date = db.Column(db.Date, nullable=False)
-    #freetime_start_time = db.Column(db.DateTime, nullable=False)
-    #freetime_end_time = db.Column(db.DateTime, nullable=False)
     start_time = DateTimeField('Start Time', format='%Y-%m-%d %H:%M', validators=[DataRequired()])
-    end_time = DateTimeField('End Time', format='%Y-%m-%d %H:%M', validators=[DataRequired()])
     submit = SubmitField('Submit')
 
 class Meetups(db.Model):
