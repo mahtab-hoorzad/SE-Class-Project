@@ -1,7 +1,7 @@
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import UserMixin
 from flask_wtf import FlaskForm
-from wtforms import StringField, SubmitField, DateField, DateTimeField
+from wtforms import StringField, SubmitField, DateField, DateTimeField, FormField,FieldList
 from wtforms.validators import DataRequired, Email, Length, Optional, ValidationError 
 
 db = SQLAlchemy()
@@ -45,7 +45,8 @@ class Freetime(db.Model):
     freetime_end = db.Column(db.Time, nullable=False)
 
 class FreetimeForm(FlaskForm):
-    start_time = DateTimeField('Start Time', format='%Y-%m-%d %H:%M', validators=[DataRequired()])
+    #start_time = DateTimeField('Start Time', format='%Y-%m-%d %H:%M', validators=[DataRequired()])
+    #availability = FieldList(FormField(DateTimeField), min_entries=1)
     submit = SubmitField('Submit')
 
 class Meetups(db.Model):

@@ -86,8 +86,7 @@ def create_group():
             start_date = form.start_date.data
             end_date = form.end_date.data
             unique_id = uuid.uuid4().hex
-            #base_url = request.host_url
-            #group_link = f"{base_url}{unique_id}"
+            base_url = request.host_url
             group_link = unique_id
             print(f"name: {group_name}, sdate: {start_date}, edate: {end_date}, link: {group_link}")
             new_group = Group(group_name=group_name, start_date=start_date, end_date=end_date, group_link=group_link)
@@ -127,7 +126,8 @@ def group_details(group_link):
     form = FreetimeForm()
     if request.method == 'POST': 
         print("Form submited")
-        print (f"ui:{current_user.id}, gi:{group.id}")
+        print(f"fd:{form.data}")
+        print (f"ui:{current_user.id}, gi:{group.id}, list:{request.form.getlist('availability')}")
         if form.validate_on_submit():
             selected_availability = request.form.getlist('availability')
             if selected_availability:
@@ -145,14 +145,16 @@ def group_details(group_link):
             except Exception as e:
                 db.session.rollback()
                 flash('Error: ' + str(e), 'danger')
+        else: 
+            print("not validated")
     return render_template('group_details.html', group=group,form=form,user_id=user_id,dates=dates,hours=hours)
 
-@app.route('/availability', methods=['POST'])
-def availability():
-    # group_id = Group.id
-    # availability_date = Group.freetime_date
-    # availability_time = Group.freetime_start_time
-    return render_template('availability.html')
+@app.route('/availability/<int:group_id>', methods=['GET','POST'])
+def availability(group_id):
+    group = Group.query.filter_by(id=group_id).first_or_404()
+    freetime = Freetime.query.filter_by(group_id=group_id).all()
+
+    return render_template('availability.html',group=group,freetime=freetime)
                            
 if __name__ == '__main__':
     with app.app_context():

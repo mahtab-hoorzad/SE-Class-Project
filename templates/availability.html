@@ -3,9 +3,20 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Group Availability</title>
 </head>
 <body>
-    ok!
+    <div>
+        <h1>Group: {{ group.group_name }}</h1>
+        <p>Start Date: {{ group.start_date }}</p>
+        <p>End Date: {{ group.end_date }}</p>
+        <p>Link: {{ group.group_link }}</p>
+
+        {% for ft in freetime %}
+            <p>Availability Date: {{ ft.freetime_date}}</p>
+            <p>Availability Start Time: {{ ft.freetime_start}}</p>
+            <p>Availability End Time: {{ ft.freetime_end}}</p>
+        {% endfor %}
+    </div>
 </body>
 </html>
