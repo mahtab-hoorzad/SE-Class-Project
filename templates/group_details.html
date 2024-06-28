@@ -67,7 +67,7 @@
         <h1>Group: {{ group.group_name }}</h1>
         <p>Start Date: {{ group.start_date }}</p>
         <p>End Date: {{ group.end_date }}</p>
-        <p>Link: {{ url_for('group_details', group_link=group.group_link)}}</p>
+        <p>Link: {{ url_for('group_details', group_link=group.group_link, next=request.url)}}</p>
 
         <h2>Select Availability</h2>
         <form method="POST" action="{{ url_for('group_details', group_link=group.group_link)  }}">

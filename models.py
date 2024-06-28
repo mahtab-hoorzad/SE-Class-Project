@@ -9,19 +9,11 @@ db = SQLAlchemy()
 class User(UserMixin,db.Model):
     id = db.Column(db.Integer, primary_key=True)
     user_name = db.Column(db.String(100), nullable=True)
-    user_phonenumber = db.Column(db.String(length=15), nullable=True)
-    user_email = db.Column(db.String(length=320), nullable=True, unique=True)
-    __table_args__ = (
-        db.CheckConstraint(
-            'user_phonenumber IS NOT NULL OR user_email IS NOT NULL',
-            name='check_phonenumber_and_email'
-        ),
-    )
+    user_email = db.Column(db.String(length=320), nullable=False, unique=True)  
 
 class UserForm(FlaskForm):
     user_name = StringField('Name', validators=[Optional(), Length(max=32)])
     user_email = StringField('Email', validators=[Optional(), Email(), Length(max=320)])
-    user_phonenumber = StringField('Phone Number', validators=[Optional(), Length(max=11)])
     submit = SubmitField('Submit')
 
 class Group(db.Model):

@@ -5,6 +5,7 @@ from datetime import datetime, timedelta
 import uuid
 from email_validator import validate_email, EmailNotValidError
 from models import db
+from urllib.parse import urlparse, urljoin
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///rendezvous.db'
@@ -30,40 +31,46 @@ def home():
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     form = UserForm()
-    if request.method == 'POST' and form.validate_on_submit():
-        user_name = form.user_name.data
-        user_email = form.user_email.data
-        user_phonenumber = form.user_phonenumber.data
-        if user_email:
-            user = User.query.filter_by(user_email=user_email).first()
-        elif user_phonenumber:
-            user = User.query.filter_by(user_phonenumber=user_phonenumber).first()
-        else:
-            flash('Please enter either an email or a phone number', 'danger')
-            return render_template('login.html', form=form)
-        print(f"User Name: {user_name}, Email: {user_email}, Phone Number: {user_phonenumber}") 
-        if user:
-            login_user(user, remember=True)
-            session.permanent = True
-            flash('You Logged in Successfully!', 'success')
-            return redirect(url_for('create_group'))
-        else:
+    if request.method == 'POST':
+        print("Form submitted")
+        if form.validate_on_submit():
+            user_name = form.user_name.data
+            user_email = form.user_email.data
+            next_page = request.args.get('next') 
+
+            user=None
             if user_email:
-                new_user = User(user_name=user_name, user_email=user_email)
+                user = User.query.filter_by(user_email=user_email).first()
             else:
-                new_user = User(user_name=user_name, user_phonenumber=user_phonenumber)
-        db.session.add(new_user)
-        try:
-            db.session.commit()
-            login_user(new_user, remember=True)
-            session.permanent = True
-            flash('You Logged in Successfully!', 'success')
-            return redirect(url_for('create_group'))
-        except Exception as e:
-            db.session.rollback()
-            flash('Error: ' + str(e), 'danger')
-        return redirect(url_for('create_group'))
-    
+                flash('Please enter an email', 'danger')
+                return render_template('login.html', form=form)
+
+            print(f"User Name: {user_name}, Email: {user_email}")
+
+            if user:
+                login_user(user, remember=True)
+                session.permanent = True
+                flash('You Logged in Successfully!', 'success')
+            else:
+                new_user = User(user_name=user_name, user_email=user_email)
+                db.session.add(new_user)
+                try:
+                    db.session.commit()
+                    login_user(new_user, remember=True)
+                    session.permanent = True
+                    flash('You Logged in Successfully!', 'success')
+                except Exception as e:
+                    db.session.rollback()
+                    flash('Error: ' + str(e), 'danger')
+
+            if next_page:
+                return redirect(next_page)
+            else:
+                return redirect(url_for('create_group'))
+        else:
+                print(form.errors)
+                flash('Form validation failed', 'danger')
+
     return render_template('login.html', form=form)
 
 @app.route('/create_group', methods=['GET', 'POST'])
