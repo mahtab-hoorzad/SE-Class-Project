@@ -6,6 +6,8 @@ import uuid
 from email_validator import validate_email, EmailNotValidError
 from models import db
 from urllib.parse import urlparse, urljoin
+from collections import defaultdict
+
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///rendezvous.db'
@@ -149,12 +151,32 @@ def group_details(group_link):
             print("not validated")
     return render_template('group_details.html', group=group,form=form,user_id=user_id,dates=dates,hours=hours)
 
+def find_common_availability(freetimes):
+    time_slots = defaultdict(int)
+    for freetime in freetimes:
+        current_time = datetime.combine(freetime.freetime_date, freetime.freetime_start)
+        end_time = datetime.combine(freetime.freetime_date, freetime.freetime_end)
+        while current_time < end_time:
+            time_slots[current_time] += 1
+            current_time += timedelta(hours=1)
+
+    num_users = len(set(freetime.user_id for freetime in freetimes))
+    common_slots = [dt for dt, count in time_slots.items() if count == num_users]
+    
+    return [dt.strftime('%Y-%m-%d %H:%M') for dt in common_slots]
+
+
 @app.route('/availability/<int:group_id>', methods=['GET','POST'])
 def availability(group_id):
-    group = Group.query.filter_by(id=group_id).first_or_404()
-    freetime = Freetime.query.filter_by(group_id=group_id).all()
-
-    return render_template('availability.html',group=group,freetime=freetime)
+    group = Group.query.get_or_404(group_id)
+    freetimes = Freetime.query.filter_by(group_id=group_id).all()
+    common_slots = find_common_availability(freetimes)
+    dates = [(group.start_date + timedelta(days=i)).strftime('%Y-%m-%d') for i in range((group.end_date - group.start_date).days + 1)]
+    hours = [f"{i}:00" for i in range(24)]
+    print("Common Slots:", common_slots)
+    print("Dates:", dates)
+    print("Hours:", hours)
+    return render_template('availability.html', group=group,common_slots=common_slots ,dates=dates ,hours=hours)
                            
 if __name__ == '__main__':
     with app.app_context():
