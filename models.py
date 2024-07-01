@@ -32,9 +32,6 @@ class GroupForm(FlaskForm):
 class Membership(db.Model):
     user_id = db.Column(db.Integer, primary_key=True)
     group_id = db.Column(db.Integer, primary_key=True)
-    # __table_args__ = (
-    #     db.UniqueConstraint('user_id', 'group_id', name='unique_membership'),
-    # )
 
 class Freetime(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -49,14 +46,14 @@ class FreetimeForm(FlaskForm):
     #availability = FieldList(FormField(DateTimeField), min_entries=1)
     submit = SubmitField('Submit')
 
-class Meetups(db.Model):
-    meetup_id = db.Column(db.Integer, primary_key=True)
-    group_id = db.Column(db.Integer, db.ForeignKey('group.id'), nullable=False)
-    meetup_date = db.Column(db.Date, nullable=False)
-    meetup_start_time = db.Column(db.Time, nullable=False)
-    meetup_start_time = db.Column(db.Time, nullable=False)
+# class Meetups(db.Model):
+#     meetup_id = db.Column(db.Integer, primary_key=True)
+#     group_id = db.Column(db.Integer, db.ForeignKey('group.id'), nullable=False)
+#     meetup_date = db.Column(db.Date, nullable=False)
+#     meetup_start_time = db.Column(db.Time, nullable=False)
+#     meetup_start_time = db.Column(db.Time, nullable=False)
 
-class Attendance(db.Model):
-    user_id = db.Column(db.Integer, primary_key=True, nullable=False)
-    meetup_id = db.Column(db.Integer, primary_key=True, nullable=False)
-    RSVP = db.Column(db.Boolean, nullable=False)
+# class Attendance(db.Model):
+    # user_id = db.Column(db.Integer, primary_key=True, nullable=False)
+    # meetup_id = db.Column(db.Integer, primary_key=True, nullable=False)
+    # RSVP = db.Column(db.Boolean, nullable=False)
