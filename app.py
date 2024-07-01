@@ -8,7 +8,6 @@ from models import db
 from urllib.parse import urlparse, urljoin
 from collections import defaultdict
 
-
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///rendezvous.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
@@ -38,6 +37,7 @@ def login():
         if form.validate_on_submit():
             user_name = form.user_name.data
             user_email = form.user_email.data
+            # the next does not work
             next_page = request.args.get('next') 
 
             user=None
@@ -106,8 +106,7 @@ def create_group():
             print(form.errors)  
             flash('Form validation failed', 'danger')
     return render_template('create_group.html', form=form)
-# the form gets submmited but not validated
-# it just refreshes the page after submission 
+
 @app.route('/group_details/<group_link>', methods=['GET', 'POST'])
 @login_required
 def group_details(group_link): 
@@ -164,7 +163,6 @@ def find_common_availability(freetimes):
     common_slots = [dt for dt, count in time_slots.items() if count == num_users]
     
     return [dt.strftime('%Y-%m-%d %H:%M') for dt in common_slots]
-
 
 @app.route('/availability/<int:group_id>', methods=['GET','POST'])
 def availability(group_id):
