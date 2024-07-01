@@ -19,7 +19,7 @@ db.init_app(app)
 login_manager = LoginManager(app)
 login_manager.login_view = 'login'
 
-from models import User, UserForm, Group, GroupForm, Freetime, FreetimeForm 
+from models import User, UserForm, Group, GroupForm, Freetime, FreetimeForm ,Membership
 
 @login_manager.user_loader
 def load_user(id):
@@ -92,9 +92,11 @@ def create_group():
             group_link = unique_id
             print(f"name: {group_name}, sdate: {start_date}, edate: {end_date}, link: {group_link}")
             new_group = Group(group_name=group_name, start_date=start_date, end_date=end_date, group_link=group_link)
-            #add new membership
             db.session.add(new_group)
             try:
+                db.session.commit()
+                new_membership = Membership(user_id=current_user.id, group_id=new_group.id)
+                db.session.add(new_membership)
                 db.session.commit()
                 flash('Group Created Successfully!', 'success')
                 return redirect(url_for('group_details', group_link=unique_id))
@@ -123,7 +125,18 @@ def group_details(group_link):
     hours = [f"{i}:00" for i in range(24)]  
     
     user_id = session.get('_user_id')
-    
+
+    membership = Membership.query.filter_by(user_id=user_id, group_id=group.id).first()
+    if not membership:
+        new_membership = Membership(user_id=user_id, group_id=group.id)
+        db.session.add(new_membership)
+        try:
+            db.session.commit()
+            flash('You have been added to the group.', 'success')
+        except Exception as e:
+            db.session.rollback()
+            flash(f'Error: {str(e)}', 'danger')
+
     form = FreetimeForm()
     if request.method == 'POST': 
         print("Form submited")
@@ -148,7 +161,7 @@ def group_details(group_link):
                 flash('Error: ' + str(e), 'danger')
         else: 
             print("not validated")
-    return render_template('group_details.html', group=group,form=form,user_id=user_id,dates=dates,hours=hours)
+    return render_template('group_details.html', group=group,form=form,user_id=user_id,dates=dates,hours=hours,membership=membership)
 
 def find_common_availability(freetimes):
     time_slots = defaultdict(int)
