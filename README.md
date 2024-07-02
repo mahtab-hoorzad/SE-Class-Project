@@ -1,6 +1,3 @@
-# SE-Class-Project
-flask web application
-
 # Rendez-vous
 
 Rendez-vous is a web application that facilitates scheduling and coordination of group meetings based on member availability.
@@ -11,7 +8,6 @@ Rendez-vous is a web application that facilitates scheduling and coordination of
 - [Installation](#installation)
 - [Usage](#usage)
 - [Contributing](#contributing)
-- [License](#license)
 
 ## Features
 
